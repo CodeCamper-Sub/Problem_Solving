@@ -1,0 +1,12 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/hangyeongsu/CLionProjects/Problem_Solving/codejam/2022/QualificationRound/d1000000/main.cpp
+bits/stdc++.h
+-
+
