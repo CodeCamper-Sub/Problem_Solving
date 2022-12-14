@@ -3,22 +3,22 @@
 typedef long long ll;
 using namespace std;
 
-ll tt, n, a, partial_multi;
+ll tt, n, a;
 ll arr[100100];
-set<ll> preliminaries;
+vector<ll> primes;
 
 ll gcd(ll a, ll b) {
     if(b == 0) return a;
     return gcd(b, a%b);
 }
 
-void calculate_preliminaries() {
+void calculate_primes() {
     bool visited[100100];
-    for(ll i = 0; i <= 100000; i++) visited[i] = false;
-    for(ll i = 2; i <= 100000; i++) {
+    for(ll i = 0; i * i <= 1000000000; i++) visited[i] = false;
+    for(ll i = 2; i * i <= 1000000000; i++) {
         if(!visited[i]) {
-            preliminaries.insert(i);
-            for(ll j = 1; i * j <= 100000; j++) visited[i * j] = true;
+            primes.push_back(i);
+            for(ll j = i * 2; j * j <= 1000000000; j += i) visited[j] = true;
         }
     }
 }
@@ -28,27 +28,35 @@ int main() {
     cin.tie(0);
 
     cin >> tt;
-    calculate_preliminaries();
-    ll multipulation = 1;
-    for(auto iter = preliminaries.begin(); iter != preliminaries.end(); iter++) {
-        multipulation *= *iter;
-        if(multipulation < 0) {
-            cout << "HAHA!!!";
-        }
-    }
+    calculate_primes();
+    
     while(tt--) {
         bool flag = false;
         cin >> n;
-        partial_multi = 1;
+        set<ll> used_primes;
         for(ll i = 0; i < n; i++){
             cin >> arr[i];
         }
         for(ll i = 0; i < n; i++) {
-            if(gcd(partial_multi, arr[i]) != 1) {
-                flag = true;
-                break;
+            for(ll j = 0; j < primes.size() && primes[j] <= arr[i]; j++) {
+                if(arr[i] % primes[j] == 0) {
+                    if(used_primes.find(primes[j]) != used_primes.end()) {
+                        flag = true;
+                    } else {
+                        used_primes.insert(primes[j]);
+                    }
+                    while(arr[i] % primes[j] == 0) {
+                        arr[i] /= primes[j];
+                    }
+                }
             }
-            partial_multi *= arr[i];
+            if(arr[i] > 1) {
+                if(used_primes.find(arr[i]) != used_primes.end()) {
+                    flag = true;
+                } else {
+                    used_primes.insert(arr[i]);
+                }
+            }
         }
         if(flag) {
             cout << "YES" << '\n';
