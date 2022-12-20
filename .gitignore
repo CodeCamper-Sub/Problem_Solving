@@ -3,6 +3,8 @@
 
 **/main
 
-**/main.dSYM/**
+**/playground*
+
+**/*.dSYM/**
 
 .vscode/settings.json
