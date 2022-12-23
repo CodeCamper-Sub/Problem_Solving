@@ -47,5 +47,34 @@ int main() {
     }
   }
 
+  ll M;
+  cin >> M;
+  for(ll i = 0; i < M; i++) {
+    cin >> A >> B;
+    if(depth[A] > depth[B]) swap(A, B); // B가 더 깊게(Depth가 크게)
+    ll interval = depth[B] - depth[A];
+    for(ll k = 19; k >=0 ; k--) {
+      if(interval >= (1 << k)) {
+        B = sparse[k][B];
+        interval = depth[B] - depth[A];
+      }
+      if(interval <= 0) break;
+    }
+    if(A == B) {
+      cout << A << '\n';
+      continue;
+    }
+    while(sparse[0][A] != sparse[0][B]) {
+      for(ll k = 1; k < 20; k++) {
+        if(sparse[k][A] == sparse[k][B]) {
+          A = sparse[k-1][A];
+          B = sparse[k-1][B];
+          break;
+        }
+      }
+    }
+    cout << sparse[0][A] << '\n';
+  }
+
   return 0;
 }
