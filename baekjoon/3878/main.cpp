@@ -14,6 +14,10 @@ struct Point {
   bool operator!=(const Point& rhs) {
     return x != rhs.x || y != rhs.y;
   }
+
+  bool operator==(const Point& rhs) {
+    return !(*this != rhs);
+  }
 };
 
 struct Line {
@@ -31,10 +35,12 @@ struct ConvexHull {
 
   ConvexHull(vector<Point> v) {
     if(v.size() < 2) {
+      v.push_back(v.back());
       this->v = v;
       this->ch = v;
       return;
     }
+
     sort(v.begin(), v.end(), [](Point a, Point b) {
       return a.y == b.y ? a.x < b.x : a.y < b.y;
     });
@@ -69,6 +75,7 @@ ll dist(Point a, Point b) {
 }
 
 bool has_intersection(Line a, Line b) {
+  if(a.a == a.b || b.a == b.b) return false;
   Point p[4] = {a.a, b.a, a.b, b.b};
   ll ccws[4];
   bool all_zero = true;
@@ -105,7 +112,7 @@ int main() {
   while(T--) {
     cin >> n >> m;
 
-    vector<Point> black_points, white_points, all_points;
+    vector<Point> black_points, white_points;
     for(ll i = 0; i < n; i++) {
       Point p;
       cin >> p.x >> p.y;
@@ -120,52 +127,71 @@ int main() {
       white_points.push_back(p);
     }
 
-    all_points.insert(all_points.end(), black_points.begin(), black_points.end());
-    all_points.insert(all_points.end(), white_points.begin(), white_points.end());
-
-    ConvexHull black(black_points), white(white_points), all(all_points);
-
-    bool is_possible = true;
-    if(all.ch.size() == black.ch.size()) {
-      is_possible = false;
-      for(ll i = 0; i < all.ch.size() && !is_possible; i++) {
-        if(all.ch[i] != black.ch[i]) {
-          is_possible = true;
-        }
-      }
-    }
-    if(all.ch.size() == white.ch.size()) {
-      is_possible = false;
-      for(ll i = 0; i < all.ch.size() && !is_possible; i++) {
-        if(all.ch[i] != white.ch[i]) {
-          is_possible = true;
-        }
-      }
-    }
-
-    #ifdef DEBUG
-    cout << "\n\t\t>Ans: ";
-    #endif
-    if(!is_possible) {
-      if(n == 0 || m == 0) {
-        cout << "YES\n";
-      } else {
-        cout << "NO\n";
-      }
+    if(n == 0 || m == 0) {
+      cout << "YES\n";
       continue;
     }
-    for(ll i = 0; i < black.ch.size() && is_possible && black.ch.size() > 1; i++) {
-      for(ll j = 0; j < white.ch.size() && is_possible && white.ch.size() > 1; j++) {
+
+    ConvexHull black(black_points), white(white_points);
+
+    bool is_possible = true;
+    for(ll i = 0; i < black.ch.size() && is_possible; i++) {
+      for(ll j = 0; j < white.ch.size() && is_possible; j++) {
         Line a(black.ch[i], black.ch[(i+1)%black.ch.size()]), b(white.ch[i], white.ch[(i+1)%white.ch.size()]);
         if(has_intersection(a, b)) is_possible = false;
       }
     }
 
-    if(is_possible) {
-      cout << "YES\n";
-    } else {
+    #ifdef DEBUG
+    cout << "\n\t\t> Ans: ";
+    #endif
+
+    if(!is_possible) {
       cout << "NO\n";
+      continue;
     }
+
+    is_possible = false;
+    for(ll i = 0; i < black.ch.size() && !is_possible; i++) {
+      for(ll j = 0; j < white.ch.size() && !is_possible; j++) {
+        Point p[3] = {black.ch[i], black.ch[(i+1)%black.ch.size()], white.ch[j]};
+        ll c = ccw(p[0], p[1], p[2]);
+        if(c < 0) {
+          is_possible = true;
+        } else if(c == 0) {
+          if(p[1] <= p[0]) swap(p[0], p[1]);
+          if(p[2] <= p[0] || p[1] <= p[2]) {
+            is_possible = true;
+          }
+        }
+      }
+    }
+    if(!is_possible) {
+      cout << "NO\n";
+      continue;
+    }
+    
+    is_possible = false;
+    for(ll i = 0; i < white.ch.size() && !is_possible; i++) {
+      for(ll j = 0; j < black.ch.size() && !is_possible; j++) {
+        Point p[3] = {white.ch[i], white.ch[(i+1)%white.ch.size()], black.ch[j]};
+        ll c = ccw(p[0], p[1], p[2]);
+        if(c < 0) {
+          is_possible = true;
+        } else if(c == 0) {
+          if(p[1] <= p[0]) swap(p[0], p[1]);
+          if(p[2] <= p[0] || p[1] <= p[2]) {
+            is_possible = true;
+          }
+        }
+      }
+    }
+    if(!is_possible) {
+      cout << "NO\n";
+      continue;
+    }
+
+    cout << "YES\n";
   }
   
   return 0;
