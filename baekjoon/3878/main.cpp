@@ -5,18 +5,9 @@ using namespace std;
 
 struct Point {
   ll x, y;
-  bool is_white;
 
   bool operator<=(const Point& rhs) {
-    return x == rhs.x ? y <= rhs.y : x < rhs.x;
-  }
-
-  bool operator!=(const Point& rhs) {
-    return x != rhs.x || y != rhs.y;
-  }
-
-  bool operator==(const Point& rhs) {
-    return !(*this != rhs);
+    return x != rhs.x ? x < rhs.x : y <= rhs.y;
   }
 };
 
@@ -34,7 +25,7 @@ struct ConvexHull {
   vector<Point> ch;
 
   ConvexHull(vector<Point> v) {
-    if(v.size() < 2) {
+    if(v.size() == 1) {
       v.push_back(v.back());
       this->v = v;
       this->ch = v;
@@ -42,7 +33,7 @@ struct ConvexHull {
     }
 
     sort(v.begin(), v.end(), [](Point a, Point b) {
-      return a.y == b.y ? a.x < b.x : a.y < b.y;
+      return a.y != b.y ? a.y < b.y : a.x < b.x;
     });
 
     sort(v.begin() + 1, v.end(), [v](Point a, Point b) {
@@ -75,33 +66,26 @@ ll dist(Point a, Point b) {
 }
 
 bool has_intersection(Line a, Line b) {
-  if(a.a == a.b || b.a == b.b) return false;
-  Point p[4] = {a.a, b.a, a.b, b.b};
-  ll ccws[4];
-  bool all_zero = true;
-  for(ll i = 0; i < 4; i++) {
-    ccws[i] = ccw(p[i], p[(i+1)%4], p[(i+2)%4]);
-    all_zero &= ccws[i] == 0;
-  }
-  if(all_zero) {
-    if(p[2] <= p[0]) swap(p[0], p[2]);
-    if(p[3] <= p[1]) swap(p[1], p[3]);
-    if(p[1] <= p[2] && p[0] <= p[3]) {
-      return true;
-    } else {
-      return false;
-    }
-  } else {
-    bool flag = true;
-    for(ll i = 0; i < 4; i++) {
-      if(ccws[i] * ccws[(i+1)%4] < 0) {
-        flag = false;
-        break;
-      }
-    }
+  ll ccw_a_b = ccw(a.a, a.b, b.a) * ccw(a.a, a.b, b.b);
+  ll ccw_b_a = ccw(b.a, b.b, a.a) * ccw(b.a, b.b, a.b);
 
-    return flag;
+  if(ccw_a_b == 0 && ccw_b_a == 0) {
+    if(a.b <= a.a) 
+      swap(a.a, a.b);
+    if(b.b <= b.a) 
+      swap(b.a, b.b);
+    return b.a <= a.b && a.a <= b.b;
   }
+
+  return ccw_a_b <= 0 && ccw_b_a <= 0;
+}
+
+bool inner(const vector<Point>& hull, Point p) {
+  ll s = ccw(hull[0], hull[1], p);
+  for(ll i = 1; i < hull.size(); i++) {
+    if(s * ccw(hull[i], hull[(i + 1) % hull.size()], p) <= 0) return false;
+  }
+  return true;
 }
 
 int main() {
@@ -116,18 +100,16 @@ int main() {
     for(ll i = 0; i < n; i++) {
       Point p;
       cin >> p.x >> p.y;
-      p.is_white = false;
       black_points.push_back(p);
     }
 
     for(ll i = 0; i < m; i++) {
       Point p;
       cin >> p.x >> p.y;
-      p.is_white = true;
       white_points.push_back(p);
     }
 
-    if(n == 0 || m == 0) {
+    if(n == 0 || m == 0 || (n == 1 && m == 1)) {
       cout << "YES\n";
       continue;
     }
@@ -135,63 +117,41 @@ int main() {
     ConvexHull black(black_points), white(white_points);
 
     bool is_possible = true;
-    for(ll i = 0; i < black.ch.size() && is_possible; i++) {
-      for(ll j = 0; j < white.ch.size() && is_possible; j++) {
-        Line a(black.ch[i], black.ch[(i+1)%black.ch.size()]), b(white.ch[i], white.ch[(i+1)%white.ch.size()]);
-        if(has_intersection(a, b)) is_possible = false;
+    for(ll i = 0; i < black.ch.size(); i++) {
+      for(ll j = 0; j < white.ch.size(); j++) {
+        Line a(black.ch[i], black.ch[(i+1)%black.ch.size()]);
+        Line b(white.ch[j], white.ch[(j+1)%white.ch.size()]);
+        if(has_intersection(a, b)) {
+          is_possible = false;
+          break;
+        }
       }
+      if(!is_possible) break;
+    }
+
+    bool black_include_white = false;
+    for(ll i = 0; i < white.ch.size(); i++) {
+      if(inner(black.ch, white.ch[i])) {
+        black_include_white = true;
+      }
+    }
+    
+    bool white_include_black = false;
+    for(ll i = 0; i < black.ch.size(); i++) {
+      if(inner(white.ch, black.ch[i])) {
+        white_include_black = true;
+      }
+    }
+
+    if(black_include_white || white_include_black) {
+      is_possible = false;
     }
 
     #ifdef DEBUG
     cout << "\n\t\t> Ans: ";
     #endif
 
-    if(!is_possible) {
-      cout << "NO\n";
-      continue;
-    }
-
-    is_possible = false;
-    for(ll i = 0; i < black.ch.size() && !is_possible; i++) {
-      for(ll j = 0; j < white.ch.size() && !is_possible; j++) {
-        Point p[3] = {black.ch[i], black.ch[(i+1)%black.ch.size()], white.ch[j]};
-        ll c = ccw(p[0], p[1], p[2]);
-        if(c < 0) {
-          is_possible = true;
-        } else if(c == 0) {
-          if(p[1] <= p[0]) swap(p[0], p[1]);
-          if(p[2] <= p[0] || p[1] <= p[2]) {
-            is_possible = true;
-          }
-        }
-      }
-    }
-    if(!is_possible) {
-      cout << "NO\n";
-      continue;
-    }
-    
-    is_possible = false;
-    for(ll i = 0; i < white.ch.size() && !is_possible; i++) {
-      for(ll j = 0; j < black.ch.size() && !is_possible; j++) {
-        Point p[3] = {white.ch[i], white.ch[(i+1)%white.ch.size()], black.ch[j]};
-        ll c = ccw(p[0], p[1], p[2]);
-        if(c < 0) {
-          is_possible = true;
-        } else if(c == 0) {
-          if(p[1] <= p[0]) swap(p[0], p[1]);
-          if(p[2] <= p[0] || p[1] <= p[2]) {
-            is_possible = true;
-          }
-        }
-      }
-    }
-    if(!is_possible) {
-      cout << "NO\n";
-      continue;
-    }
-
-    cout << "YES\n";
+    cout << (is_possible ? "YES" : "NO") << '\n';
   }
   
   return 0;
