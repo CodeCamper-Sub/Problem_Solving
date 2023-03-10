@@ -25,6 +25,7 @@
     "body": [
       "#include <bits/stdc++.h>",
       "#define INF 999999999999",
+      "$1",
       "typedef long long ll;",
       "using namespace std;",
       "",
