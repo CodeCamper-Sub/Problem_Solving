@@ -6,13 +6,12 @@ using namespace std;
 ll n, k, a, cumulative_sum[1001000][26];
 string s;
 char c;
-vector<Matrix> sparse;
 
 struct Matrix {
   vector<vector<ll>> mat;
   ll row, col;
   Matrix(ll row, ll col): row(row), col(col) {
-    while(row--) {
+    for(ll i = 0; i < row; i++) {
       mat.push_back(vector<ll>(col));
       fill(mat.back().begin(), mat.back().end(), 0);
     }
@@ -31,6 +30,8 @@ struct Matrix {
     return result;
   }
 };
+
+vector<Matrix> sparse;
 
 int main() {
   ios_base::sync_with_stdio(false);
@@ -56,8 +57,8 @@ int main() {
   sparse[0].mat[1][2] = 1;
   sparse[0].mat[2][2] = 1;
 
-  for(ll i = 2; i <= 62; i++) {
-    sparse[i] = sparse[i-1] * sparse[i-1];
+  for(ll i = 1; i <= 62; i++) {
+    sparse.push_back(sparse.back() * sparse.back());
   }
 
   for(ll i = 0; i < k; i++) {
@@ -75,15 +76,34 @@ int main() {
 
     Matrix result(3, 1);
     result.mat[0][0] = 0;
-    result.mat[0][1] = 1;
-    result.mat[0][1] = 1;
+    result.mat[1][0] = 1;
+    result.mat[2][0] = 1;
 
     result = iden * result;
 
     ll start_index = result.mat[0][0];
-    if(s.size() - start_index - 1 <= a) {
-      
+    ll answer = 0;
+
+    if(s.size() - (start_index + 1) <= a) {
+      if(start_index > 0) {
+        answer = cumulative_sum[s.size() - 1][c - 'A'] - cumulative_sum[start_index - 1][c - 'A'];
+        a -= s.size() - start_index;
+        start_index = 0;
+      }
+      answer += cumulative_sum[s.size() - 1][c - 'A'] * (a / s.size());
+      a %= s.size();
+      if(a > 0) {
+        answer += cumulative_sum[a - 1][c - 'A'];
+      }
+    } else {
+      if(start_index > 0) {
+        answer = cumulative_sum[start_index + a - 1][c - 'A'] - cumulative_sum[start_index - 1][c - 'A'];
+      } else {
+        answer = cumulative_sum[start_index + a - 1][c - 'A'];
+      }
     }
+
+    cout << answer << '\n';
   }
   
   return 0;
