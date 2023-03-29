@@ -11,6 +11,7 @@
         "-Wl,0x20000000",
         "-fcolor-diagnostics",
         "-fansi-escape-codes",
+        "-fsanitize=address",
         "-g",
         "${file}",
         "-o",
