@@ -1,0 +1,16 @@
+{
+  "ProblemSolvingPython": {
+    "scope": "python",
+    "prefix": "problem-solving",
+    "body": [
+      "import sys",
+      "sys.setrecursionlimit(10**6)",
+      "input = sys.stdin.readline",
+      "print = sys.stdout.write",
+      "",
+      "$0",
+      "",
+    ],
+    "description": "base python snippet for PS"
+  }
+}

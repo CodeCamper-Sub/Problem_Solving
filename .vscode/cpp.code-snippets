@@ -51,5 +51,14 @@
       "}"
     ],
     "description": "base snippet for PS"
+  },
+  "ProblemSolvingPython": {
+    "scope": "py",
+    "prefix": "problem-solving",
+    "body": [
+      "import sys",
+      "input = sys.stdin.readline",
+    ],
+    "description": "base python snippet for PS"
   }
 }
