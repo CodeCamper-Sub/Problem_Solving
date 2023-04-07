@@ -1,8 +1,13 @@
+# Extension이 없는 실행파일 무시
+*
+!*/
+!*.*
 
 .DS_Store
 
-**/main
-**/main.bin
+**/.cph
+
+**/*.bin
 
 **/solve_again/**
 
