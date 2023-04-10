@@ -5,18 +5,18 @@ using namespace std;
 
 struct Score {
   ll g, s, b;
-  
-  bool operator<(Score& rhs) {
-    if(g != rhs.g) return g < rhs.g;
-    else if(s != rhs.s) return s < rhs.s;
-    else return b < rhs.b;
+
+  bool operator>(const Score& rhs) {
+    if(g != rhs.g) return g > rhs.g;
+    else if(s != rhs.s) return s > rhs.s;
+    else return b > rhs.b;
   }
 };
 
-ll N, L, answer;
+ll N, L;
 Score first;
-vector<Score> scores;
-vector<pair<Score, ll>> candidates; // 현재 점수, 받은 추가 메달의 수
+vector<Score> scores, candidates;
+vector<vector<ll>> dp;
 
 int main() {
   ios_base::sync_with_stdio(false);
@@ -24,30 +24,53 @@ int main() {
 
   cin >> N >> L;
   scores.resize(N - 1);
-  for(ll i = 0; i < N; i++) {
-    if(i == 0) {
-      cin >> first.g >> first.s >> first.b;
-    } else {
-      cin >> scores[i].g >> scores[i].s >> scores[i].b;
-    }
+  cin >> first.g >> first.s >> first.b;
+  for(ll i = 0; i < N - 1; i++) {
+    cin >> scores[i].g >> scores[i].s >> scores[i].b;
   }
+
   first.g += L;
-  sort(scores.begin(), scores.end(), [](auto a, auto b) {
-    return b < a;
+
+  sort(scores.begin(), scores.end(), [](Score a, Score b) {
+    return a > b;
   });
-  answer = 0;
-  
-  for(ll i = 0; i < scores.size(); i++) {
-    if(first < scores[i]) answer++;
-    else if(first.g == scores[i].g) {
-      candidates.push_back({scores[i], 0});
+
+  ll answer = 1;
+  for(Score s: scores) {
+    if(s > first) answer++;
+    else if(s.g == first.g) {
+      candidates.push_back(s);
     } else {
       break;
     }
   }
 
-  
+  dp.assign(candidates.size() + 1, vector<ll>(L + 1, -1));
+  dp[0][L] = L;
+  for(ll i = 1; i <= candidates.size(); i++) {
+    Score candidate = candidates[i - 1];
+    bool is_possible = false;
+    for(ll j = 0; j <= L; j++) {
+      if(dp[i - 1][j] == -1) continue;
+      // 은메달 더 주기
+      if(j >= first.s - candidate.s + 1 && dp[i - 1][j] != -1) {
+        is_possible = true;
+        ll delta = first.s - candidate.s + 1;
+        dp[i][j - delta] = max(dp[i][j - delta], dp[i - 1][j]);
+      }
+      // 은메달은 같게, 동메달 더 주기
+      if(j >= first.s - candidate.s && dp[i-1][j] >= max(0ll, first.b - candidate.b + 1) && L >= first.s - candidate.s + max(0ll, first.b - candidate.b + 1)) {
+        ll ds = first.s - candidate.s;
+        ll db = max(0ll, first.b - candidate.b + 1);
+        is_possible = true;
+        dp[i][j - ds] = max(dp[i][j - ds], dp[i - 1][j] - db);
+      }
+    }
+    if(is_possible) answer++;
+    else break;
+  }
 
-  
+  cout << answer << '\n';
+
   return 0;
 }

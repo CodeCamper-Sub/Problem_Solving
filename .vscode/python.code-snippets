@@ -8,7 +8,12 @@
       "input = sys.stdin.readline",
       "print = sys.stdout.write",
       "",
-      "$0",
+      "def main():",
+      "    $0",
+      "    return",
+      "",
+      "if __name__ == \"__main__\":",
+      "    main()",
       "",
     ],
     "description": "base python snippet for PS"
