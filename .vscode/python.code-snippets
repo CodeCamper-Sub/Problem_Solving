@@ -3,7 +3,7 @@
     "scope": "python",
     "prefix": "problem-solving",
     "body": [
-      "import sys",
+      "import sys, functools, math",
       "sys.setrecursionlimit(10**6)",
       "input = sys.stdin.readline",
       "print = sys.stdout.write",
