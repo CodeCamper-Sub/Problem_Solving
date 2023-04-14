@@ -106,5 +106,8 @@
   "C_Cpp.clang_format_fallbackStyle": "LLVM",
   "editor.formatOnSave": false,
   "C_Cpp.clang_format_style": "file",
-  "cph.language.cpp.Args": "-std=c++17"
+  "cph.language.cpp.Args": "-std=c++17",
+  "cph.general.defaultLanguage": "cpp",
+  "cph.general.firstTime": false,
+  "cph.general.useShortCodeForcesName": true
 }
