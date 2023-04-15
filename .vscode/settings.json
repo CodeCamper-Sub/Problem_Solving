@@ -109,5 +109,6 @@
   "cph.language.cpp.Args": "-std=c++17",
   "cph.general.defaultLanguage": "cpp",
   "cph.general.firstTime": false,
-  "cph.general.useShortCodeForcesName": true
+  "cph.general.useShortCodeForcesName": true,
+  "cph.general.saveLocation": "/Users/hangyeongsu/git/Eric-HanGyeongSoo/Problem_Solving/tmp"
 }
