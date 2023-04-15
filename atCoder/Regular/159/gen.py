@@ -40,8 +40,8 @@ def compile():
 
 
 def generate_data():
-    A = random.randint(1, 1000)
-    B = random.randint(1, 1000)
+    A = random.randint(100000000000, 1000000000000)
+    B = random.randint(100000000000, 1000000000000)
 
     # Delete existing file
     if Path(input_file_path).is_file():
