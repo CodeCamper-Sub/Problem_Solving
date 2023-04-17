@@ -110,5 +110,11 @@
   "cph.general.defaultLanguage": "cpp",
   "cph.general.firstTime": false,
   "cph.general.useShortCodeForcesName": true,
-  "cph.general.saveLocation": "/Users/hangyeongsu/git/Eric-HanGyeongSoo/Problem_Solving/tmp"
+  "cph.general.saveLocation": "",
+  "code-runner.runInTerminal": true,
+  "code-runner.executorMap": {
+    "c": "cd $dir && gcc $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
+    "cpp": "cd $dir && clang++ -std=c++17 $fileName -o $workspaceRoot/tmp/$fileNameWithoutExt && $workspaceRoot/tmp/$fileNameWithoutExt",
+    "python": "python3 -u"
+  },
 }
