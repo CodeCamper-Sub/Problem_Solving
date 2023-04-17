@@ -110,7 +110,7 @@
   "cph.general.defaultLanguage": "cpp",
   "cph.general.firstTime": false,
   "cph.general.useShortCodeForcesName": true,
-  "cph.general.saveLocation": "",
+  "cph.general.saveLocation": "tmp",
   "code-runner.runInTerminal": true,
   "code-runner.executorMap": {
     "c": "cd $dir && gcc $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
