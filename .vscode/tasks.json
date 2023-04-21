@@ -12,6 +12,7 @@
         "-fcolor-diagnostics",
         "-fansi-escape-codes",
         "-fsanitize=address",
+        "-fsanitize=undefined",
         "-g",
         "${file}",
         "-o",
