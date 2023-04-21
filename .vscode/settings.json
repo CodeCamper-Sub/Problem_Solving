@@ -116,4 +116,5 @@
     "cpp": "cd $dir && clang++ -std=c++17 $fileName -o $workspaceRoot/tmp/$fileNameWithoutExt && $workspaceRoot/tmp/$fileNameWithoutExt",
     "python": "python3 -u"
   },
+  "cph.general.autoShowJudge": false,
 }
