@@ -4,7 +4,7 @@
     "prefix": "codeforce",
     "body": [
       "#include <bits/stdc++.h>",
-      "#define INF 999999999999",
+      "#define INF (__LONG_LONG_MAX__ / 3)",
       "typedef long long ll;",
       "using namespace std;",
       "",
@@ -13,6 +13,7 @@
       "void init() {",
       "  $2",
       "}",
+      "",
       "void solve() {",
       "  $0",
       "}",
@@ -36,7 +37,7 @@
     "prefix": "problem-solving",
     "body": [
       "#include <bits/stdc++.h>",
-      "#define INF 999999999999",
+      "#define INF (__LONG_LONG_MAX__ / 3)",
       "typedef long long ll;",
       "using namespace std;",
       "",
