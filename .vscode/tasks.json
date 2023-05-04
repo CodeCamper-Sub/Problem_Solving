@@ -17,7 +17,8 @@
         "${file}",
         "-o",
         "${workspaceFolder}/tmp/${fileBasenameNoExtension}",
-        "-DDEBUG"
+        "-DDEBUG",
+        "-DLOCAL",
       ],
       "options": {
         "cwd": "${fileDirname}"

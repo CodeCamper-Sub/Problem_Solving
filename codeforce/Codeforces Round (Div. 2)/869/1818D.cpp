@@ -27,6 +27,7 @@ void dfs(ll now, vector<ll>& path) {
       ll k = -1;
       for(ll i = 0; i < path.size(); i++) {
         if(path[i] == next) k = i;
+        if(k == -1) continue;
         if(k <= i && e[path[i]].size() >= 4) {
           fish_found = true;
           break;
@@ -107,6 +108,11 @@ void solve() {
         answer_edges.push_back({now, not_included[0]});
         for(ll j = 0; j < cycle.size(); j++) {
           answer_edges.push_back({cycle[(i + j) % cycle.size()], cycle[(i + j + 1) % cycle.size()]});
+          if(cycle[(i + j + 1) % cycle.size()] == adj[0]) {
+            answer_edges.push_back({adj[1], now});
+          } else if(cycle[(i + j + 1) % cycle.size()] == adj[1]) {
+            answer_edges.push_back({adj[0], now});
+          }
           if(cycle[(i + j + 1) % cycle.size()] == not_adj[0]) {
             answer_edges.push_back({not_adj[0], now});
             break;
