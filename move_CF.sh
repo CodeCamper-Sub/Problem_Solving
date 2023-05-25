@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 # 현재 폴더 안에 있는 .cpp 파일들을 확인
 for cpp_file in *.cpp; do
     # .cpp 확장자 제거
@@ -13,15 +14,34 @@ for cpp_file in *.cpp; do
         group=$(python3 -c "import json; print(json.load(open('$prob_file'))['group'])")
 
         # 'Codeforces - '를 제거하고, Round 뒤의 숫자를 제거하여 대회 이름을 찾는다.
-        contest_name=$(python3 -c "import re; print(re.sub('Codeforces - | Round [0-9]*', '', '$group'))")
-        
-        # Round 뒤의 숫자가 대회 번호이다.
-        contest_number=$(python3 -c "import re; print(re.search(' Round ([0-9]*)', '$group').group(1))")
+        codeforce_contest_name=$(python3 -c "import re; print(re.sub('Codeforces - | Round [0-9]*', '', '$group'))")
+        if [ "$codeforce_contest_name" != "$group" ]; then
+            contest_name="$codeforce_contest_name"
+            contest_number=$(python3 -c "import re; print(re.search(' Round ([0-9]*)', '$group').group(1))")  
 
-        # 'codeforces' 폴더 아래에 대회 이름 폴더를 생성하거나 찾고, 그 안에 대회 번호 폴더를 생성하거나 찾는다.
-        mkdir -p "codeforce/$contest_name/$contest_number"
-        
-        # .cpp 파일을 해당 폴더로 이동한다.
-        mv "$cpp_file" "codeforce/$contest_name/$contest_number"
+            mkdir -p "codeforce/$contest_name/$contest_number"
+            
+            mv "$cpp_file" "codeforce/$contest_name/$contest_number"
+        fi
+
+        abc_contest_name=$(python3 -c "import re; print(re.search('AtCoder Beginner Contest ([0-9]*)', '$group'))")
+        if [ "$abc_contest_name" != "None" ]; then
+            contest_name="Beginner"
+            contest_number=$(python3 -c "import re; print(re.search('AtCoder Beginner Contest ([0-9]*)', '$group').group(1))")
+
+            mkdir -p "atCoder/$contest_name/$contest_number"
+            
+            mv "$cpp_file" "atCoder/$contest_name/$contest_number"
+        fi
+
+        arc_contest_name=$(python3 -c "import re; print(re.search('AtCoder Regular Contest ([0-9]*)', '$group'))")
+        if [ "$arc_contest_name" != "None" ]; then
+            contest_name="Regular"
+            contest_number=$(python3 -c "import re; print(re.search('AtCoder Regular Contest ([0-9]*)', '$group').group(1))")
+
+            mkdir -p "atCoder/$contest_name/$contest_number"
+            
+            mv "$cpp_file" "atCoder/$contest_name/$contest_number"
+        fi
     fi
 done
