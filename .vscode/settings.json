@@ -117,4 +117,5 @@
     "python": "python3 -u"
   },
   "cph.general.autoShowJudge": false,
+  "cph.general.timeOut": 5000,
 }
