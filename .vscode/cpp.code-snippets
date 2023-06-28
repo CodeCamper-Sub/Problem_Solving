@@ -5,7 +5,7 @@
     "body": [
       "#include <bits/stdc++.h>",
       "#define INF (__LONG_LONG_MAX__ / 3)",
-      "typedef long long ll;",
+      "using ll = long long;",
       "using namespace std;",
       "",
       "$1",
@@ -38,7 +38,7 @@
     "body": [
       "#include <bits/stdc++.h>",
       "#define INF (__LONG_LONG_MAX__ / 3)",
-      "typedef long long ll;",
+      "using ll = long long;",
       "using namespace std;",
       "",
       "$1",
