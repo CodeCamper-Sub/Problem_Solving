@@ -118,4 +118,5 @@
   },
   "cph.general.autoShowJudge": false,
   "cph.general.timeOut": 5000,
+  "cph.general.saveLocation": "/Users/hangyeongsu/git/Eric-HanGyeongSoo/Problem_Solving/tmp",
 }
